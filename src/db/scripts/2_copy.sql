@@ -1,0 +1,1 @@
+COPY transactions("date", "description", "originalDescription", "amount", "transactionType", "category", "accountName", "labels", "notes") FROM '/data/transactions.csv' DELIMITER ',' CSV HEADER;
