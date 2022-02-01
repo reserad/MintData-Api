@@ -22,8 +22,9 @@ export default class TransactionService {
             .whereBetween('date', [from, to])
     }
 
-    paginate = async (page: number, take: number) : Promise<TransactionsGrid> => {
+    grid = async (page: number, take: number, sortBy: string, direction: 'asc' | 'desc' = 'desc') : Promise<TransactionsGrid> => {
         return knex('transactions')
+            .orderBy(sortBy ? sortBy : 'date', direction)
             .paginate({
                 perPage: take,
                 currentPage: page,

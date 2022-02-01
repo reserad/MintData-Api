@@ -31,18 +31,20 @@ export default [
     },
     {
         method: "POST",
-        path: "/transactions/paginate",
+        path: "/transactions/grid",
         options: {
             validate: {
                 payload: Joi.object({
                     page: Joi.number().required(),
-                    take: Joi.number().required()
+                    take: Joi.number().required(),
+                    sortBy: Joi.string().required().allow(null),
+                    direction: Joi.string().required()
                 })
             }
         },
         handler: async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
-            const {page, take} = request.payload as Pagination;
-            const transactions = await (h.context.transactionService as TransactionService).paginate(page, take);
+            const {page, take, sortBy, direction} = request.payload as any;
+            const transactions = await (h.context.transactionService as TransactionService).grid(page, take, sortBy, direction);
             return h.response(transactions);
         }
     },
