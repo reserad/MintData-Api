@@ -1,4 +1,5 @@
 import {knex} from '../db/connect';
+import { GridPayloadFilter } from '../db/models/gridPayload';
 import { Transaction } from '../db/models/transaction';
 import { TransactonFilter } from '../db/models/transactionFilter';
 import { TransactionsGrid } from '../db/models/transactionsGrid';
@@ -22,9 +23,22 @@ export default class TransactionService {
             .whereBetween('date', [from, to])
     }
 
-    grid = async (page: number, take: number, sortBy: string, direction: 'asc' | 'desc' = 'desc') : Promise<TransactionsGrid> => {
-        return knex('transactions')
-            .orderBy(sortBy ? sortBy : 'date', direction)
+    grid = async (page: number, take: number, sortBy: string, direction: 'asc' | 'desc' | string = 'desc', filters: GridPayloadFilter[]) : Promise<TransactionsGrid> => {
+        let chain = knex('transactions')
+            .orderBy(sortBy ? sortBy : 'date', direction);
+
+        if (filters.length > 0) {
+            filters.forEach(filter => {
+                if (filter.filterType === 'contains') {
+                    chain = chain.where(filter.column, 'like', `%${filter.value}%`);
+                } else if (filter.filterType === 'equals') {
+                    chain = chain.where(filter.column, '=', filter.value);
+                }
+
+            });
+        }
+
+        return chain
             .paginate({
                 perPage: take,
                 currentPage: page,

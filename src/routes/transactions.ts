@@ -1,6 +1,7 @@
 import { Request, ResponseToolkit, ResponseObject, ServerRoute } from "@hapi/hapi";
 import Joi from "joi";
 import moment from "moment";
+import { GridPayload } from "../db/models/gridPayload";
 import { Pagination } from "../db/models/pagination";
 import TransactionService from "../services/transactionService";
 
@@ -38,13 +39,18 @@ export default [
                     page: Joi.number().required(),
                     take: Joi.number().required(),
                     sortBy: Joi.string().required().allow(null),
-                    direction: Joi.string().required()
+                    direction: Joi.string().required(),
+                    filters: Joi.array().items({
+                        column: Joi.string().allow(''),
+                        value: Joi.string().allow(''),
+                        filterType: Joi.string().allow('')
+                    })
                 })
             }
         },
         handler: async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
-            const {page, take, sortBy, direction} = request.payload as any;
-            const transactions = await (h.context.transactionService as TransactionService).grid(page, take, sortBy, direction);
+            const {page, take, sortBy, direction, filters} = request.payload as GridPayload;
+            const transactions = await (h.context.transactionService as TransactionService).grid(page, take, sortBy, direction, filters);
             return h.response(transactions);
         }
     },
