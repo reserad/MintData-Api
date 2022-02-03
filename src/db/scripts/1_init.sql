@@ -10,7 +10,7 @@ CREATE TABLE transactions (
     "date" timestamp NOT NULL,
     "description" text NOT NULL,
     "originalDescription" text NOT NULL,
-    "amount" text NOT NULL,
+    "amount" decimal(12,2) NOT NULL,
     "transactionType" text NOT NULL,
     "category" text NOT NULL,
     "accountName" text NOT NULL,
