@@ -12,7 +12,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         "Date" text NOT NULL,
         "Description" text NOT NULL,
         "Original Description" text NOT NULL,
-        "Amount" text NOT NULL,
+        "amount" decimal(12,2) NOT NULL,
         "Transaction Type" text NOT NULL,
         "Category" text NOT NULL,
         "Account Name" text NOT NULL,
