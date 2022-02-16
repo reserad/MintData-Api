@@ -50,7 +50,9 @@ export default [
         },
         handler: async (request: Request, h: ResponseToolkit): Promise<ResponseObject> => {
             const {page, take, sortBy, direction, filters} = request.payload as GridPayload;
-            const transactions = await (h.context.transactionService as TransactionService).grid(page, take, sortBy, direction, filters);
+            let transactions = await (h.context.transactionService as TransactionService).grid(page, take, sortBy, direction, filters);
+            const allTransactions = await (h.context.transactionService as TransactionService).getAll();
+            transactions.categoryTypes = Array.from(new Set(allTransactions.map(transaction => transaction.category)));
             return h.response(transactions);
         }
     },
